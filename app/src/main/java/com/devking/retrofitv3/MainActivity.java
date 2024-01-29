@@ -1,13 +1,19 @@
 package com.devking.retrofitv3;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Display;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +34,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TextView tv = findViewById(R.id.tv);
+        RecyclerView recyclerView = findViewById(R.id.recyler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        RecylerViewAdapter adapter = new RecylerViewAdapter(dataset);
+        recyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
 
         Retrofit retrofit =new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
@@ -44,16 +55,16 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<List<Model>> call, Response<List<Model>> response) {
                 if(response.isSuccessful() && response.body() != null){
                     dataset= (ArrayList<Model>) response.body();
-                    for(int i=0;i<dataset.size();i++) {
-                        tv.append(dataset.get(i).getTitle());
-                    }
+                    adapter.updateData(dataset);
                 }
             }
 
+
             @Override
             public void onFailure(Call<List<Model>> call, Throwable t) {
-
+                Log.d(TAG, "onFailure: error had occurred");
             }
         });
     }
+
 }
