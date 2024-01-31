@@ -35,7 +35,7 @@ public class Model {
         this.title = title;
     }
 
-    public String getUr() {
+    public String getUrl() {
         return url;
     }
 

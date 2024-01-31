@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
@@ -24,9 +25,10 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements  ClickListener{
     public String url = "https://jsonplaceholder.typicode.com/";
     public ArrayList<Model> dataset;
+    ClickListener clickListener;
 
 
     @Override
@@ -36,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.recyler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        RecylerViewAdapter adapter = new RecylerViewAdapter(dataset);
+        RecylerViewAdapter adapter = new RecylerViewAdapter(dataset,this);
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
@@ -67,4 +69,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+    @Override
+    public void onItemClick(int position) {
+        if (position != RecyclerView.NO_POSITION){
+
+            Intent intent = new Intent(this,MainActivity2.class);
+            Model curentitem = dataset.get(position);
+            intent.putExtra("Image_url", curentitem.getUrl());
+            startActivity(intent);
+
+        }
+    }
 }
